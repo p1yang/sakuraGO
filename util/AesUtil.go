@@ -3,6 +3,7 @@ package p1Util
 import (
 	"bytes"
 	"crypto/aes"
+	"encoding/hex"
 )
 
 // AES-ECB加密
@@ -21,8 +22,8 @@ func ECBEncrypt(plainText, key []byte) ([]byte, error) {
 }
 
 // AES-ECB解密
-func ECBDecrypt(cipherText, key []byte) ([]byte, error) {
-
+func ECBDecrypt(ScipherText string, key []byte) ([]byte, error) {
+	cipherText, _ := hex.DecodeString(ScipherText)
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
