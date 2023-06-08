@@ -7,10 +7,12 @@ import (
 )
 
 // AES-ECB加密
-func ECBEncrypt(plainText, key []byte) ([]byte, error) {
+func ECBEncrypt(SPlainText, SKey string) (string, error) {
+	plainText := []byte(SPlainText)
+	key := []byte(SKey)
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	bs := aes.BlockSize
 	paddingPlainText := pkcs7Padding(plainText, bs)
@@ -18,15 +20,16 @@ func ECBEncrypt(plainText, key []byte) ([]byte, error) {
 	for i := 0; i < len(paddingPlainText); i += bs {
 		block.Encrypt(cipherText[i:i+bs], paddingPlainText[i:i+bs])
 	}
-	return cipherText, nil
+	return hex.EncodeToString(cipherText), nil
 }
 
 // AES-ECB解密
-func ECBDecrypt(ScipherText string, key []byte) ([]byte, error) {
+func ECBDecrypt(ScipherText, SKey string) (string, error) {
 	cipherText, _ := hex.DecodeString(ScipherText)
+	key := []byte(SKey)
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	bs := aes.BlockSize
 	plainText := make([]byte, len(cipherText))
@@ -36,7 +39,7 @@ func ECBDecrypt(ScipherText string, key []byte) ([]byte, error) {
 	}
 
 	unpaddingPaninText := pkcs7Unpadding(plainText)
-	return unpaddingPaninText, nil
+	return string(unpaddingPaninText), nil
 }
 
 func pkcs7Padding(data []byte, blockSize int) []byte {
